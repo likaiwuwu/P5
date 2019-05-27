@@ -1,34 +1,58 @@
-//this is just a change
-var slider;
+var bird;
+var pipes = [];
+var paused = false;
+var scoreboard;
 
 function setup() {
-	createCanvas(600, 600);
-	slider = createSlider(0, TWO_PI, PI/4, 0.01);
+	createCanvas(400, 600);
+	bird = new Bird();
+	pipes.push(new Pipe());
+	scoreboard = new Scoreboard();
 }
 
 function draw() {
-	background(51);
-	angle = slider.value();
-	stroke(255);
-	translate(width/2, height);
-	branch(height/4);
-}
+	background(0);
+	bird.update();
+	bird.show();
+	scoreboard.update();
+	speed *= 1.0001;	
 
-this is just a change;
-
-
-function branch(len) {
-	line(0, 0, 0, -len);
-	translate(0, -len);
-	if (len > 4) {
-		push();
-		rotate(angle);
-		branch(len * 0.67);
-		pop();
-		push();
-		rotate(-angle);
-		branch(len * 0.67);
-		pop();
+	if (frameCount % 100 == 0) {
+		pipes.push(new Pipe());
+	}
+	if (bird.hitsWall()) {
+		noLoop();
+		paused = true;
+	}
+	for (let i = 0; i < pipes.length; i++) {
+		if (bird.hitsPipe(pipes[i])) {
+			noLoop();
+			paused = true;
+		}
+		pipes[i].show();
+		pipes[i].update();
+		if (pipes[i].x < -pipes[i].w) {
+			scoreboard.incrementScore();
+			pipes.splice(i, 1);
+		}
 	}
 }
 
+function keyPressed() {
+	if (paused) {
+		restartGame();
+		paused = false;
+	}
+
+	if (key == ' ') {
+		bird.up();
+	}
+	
+}
+
+function restartGame() {
+	pipes.length = 0;
+	scoreboard.score = 0;
+	bird.y = height / 2;
+	loop();
+}
