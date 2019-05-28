@@ -32,6 +32,7 @@ function draw() {
 		pipes[i].show();
 		pipes[i].update();
 		if (pipes[i].x < -pipes[i].w) {
+			gap *= 0.95;	
 			scoreboard.incrementScore();
 			pipes.splice(i, 1);
 		}

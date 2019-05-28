@@ -1,7 +1,8 @@
 var speed = 4;
+var gap = 600 * 0.35;
 function Pipe() {
-	this.top = random(height/2);
-	this.bottom = random(height/2);
+	this.top = random(height - gap);
+	this.bottom = height - this.top - gap;
 	this.x = width;
 	this.w = 20;
 
